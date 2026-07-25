@@ -48,3 +48,14 @@ class KDTree:
         else:
             node.right = self._insert(node.right, point, depth + 1)
         return node
+
+    def nearest(self, target):
+        return self._nearest(self.root, target, 0)
+
+    # simple version for now: checks every node, pruning comes next
+    def _nearest(self, node, target, depth):
+        if node is None:
+            return None
+
+        best = closer_point(target, self._nearest(node.left, target, depth + 1), node.point)
+        return closer_point(target, self._nearest(node.right, target, depth + 1), best)
