@@ -2,7 +2,7 @@ from node import Node
 
 
 def distance_squared(a, b):
-    return sum((x - y) ** 2 for x, y in zip(a, b))
+    return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2
 
 
 def closer_point(target, p1, p2):
@@ -16,8 +16,7 @@ def closer_point(target, p1, p2):
 
 
 class KDTree:
-    def __init__(self, points=None, k=2):
-        self.k = k
+    def __init__(self, points=None):
         self.root = self._build(list(points), 0) if points else None
 
     def _build(self, points, depth):
@@ -25,7 +24,7 @@ class KDTree:
             return None
 
         # splitting axis cycles with depth: x, y, x, y, ...
-        axis = depth % self.k
+        axis = depth % 2
         points.sort(key=lambda p: p[axis])
         mid = len(points) // 2
 
@@ -42,7 +41,7 @@ class KDTree:
         if node is None:
             return Node(point)
 
-        axis = depth % self.k
+        axis = depth % 2
         if point[axis] < node.point[axis]:
             node.left = self._insert(node.left, point, depth + 1)
         else:
