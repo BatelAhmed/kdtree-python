@@ -41,4 +41,10 @@ class KDTree:
     def _insert(self, node, point, depth):
         if node is None:
             return Node(point)
+
+        axis = depth % self.k
+        if point[axis] < node.point[axis]:
+            node.left = self._insert(node.left, point, depth + 1)
+        else:
+            node.right = self._insert(node.right, point, depth + 1)
         return node
