@@ -51,10 +51,22 @@ class KDTree:
     def nearest(self, target):
         return self._nearest(self.root, target, 0)
 
-    # simple version for now: checks every node, pruning comes next
     def _nearest(self, node, target, depth):
         if node is None:
             return None
 
-        best = closer_point(target, self._nearest(node.left, target, depth + 1), node.point)
-        return closer_point(target, self._nearest(node.right, target, depth + 1), best)
+        axis = depth % 2
+
+        # search the side the target is on first
+        if target[axis] < node.point[axis]:
+            near, far = node.left, node.right
+        else:
+            near, far = node.right, node.left
+
+        best = closer_point(target, self._nearest(near, target, depth + 1), node.point)
+
+        # the other side only matters if the splitting line is closer than the best so far
+        if (target[axis] - node.point[axis]) ** 2 < distance_squared(target, best):
+            best = closer_point(target, self._nearest(far, target, depth + 1), best)
+
+        return best
