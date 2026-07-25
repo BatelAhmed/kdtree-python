@@ -34,3 +34,11 @@ class KDTree:
         node.left = self._build(points[:mid], depth + 1)
         node.right = self._build(points[mid + 1:], depth + 1)
         return node
+
+    def insert(self, point):
+        self.root = self._insert(self.root, point, 0)
+
+    def _insert(self, node, point, depth):
+        if node is None:
+            return Node(point)
+        return node
